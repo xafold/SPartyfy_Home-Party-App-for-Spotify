@@ -1,0 +1,49 @@
+.node
+node_modules/
+__pycache__/
+
+# Dependency directories
+node_modules/
+yarn.lock
+package-lock.json
+
+# Build output
+/build
+/dist
+
+# Environment files
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE-specific files
+.vscode/
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Logs and temporary files
+*.log
+*.tmp
+
+# macOS specific files
+.DS_Store
+
+# NPM cache
+/.npm
+
+# Coverage reports
+/coverage
+
+# Miscellaneous
+*.swp
+*.DS_Store
+Thumbs.db
+
+# Dependency directories
+npm-debug.log
+yarn-error.log
