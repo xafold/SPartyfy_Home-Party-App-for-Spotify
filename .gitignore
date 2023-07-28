@@ -1,6 +1,6 @@
 .node
 node_modules/
-test_app/__pycache__/
+test_app/__pycache__
 
 # Dependency directories
 node_modules/
