@@ -22,11 +22,8 @@ optimization: {
 minimize: true,
 },
 plugins: [
-new webpack.DefinePlugin({
-    "process.env": {
-    // This has effect on the react lib size
-    NODE_ENV: JSON.stringify("production"),
-    },
-}),
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify('development'), // Change this for production build
+    }),
 ],
 };
