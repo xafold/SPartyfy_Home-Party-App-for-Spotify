@@ -2,20 +2,70 @@ import React, { Component } from "react";
 import Button from "@material-ui/core/Button"
 import Grid from '@material-ui/core/Grid';
 import { Typography } from "@material-ui/core";
-import { TextField } from "@material-ui/core/TextField";
+import TextField  from "@material-ui/core/TextField";
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from "@material-ui/core/FormHelperText";
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import axios from 'axios';
 
 
 export default class CreateRoomPage extends Component{
-    defaultVotes =2;
+    defaultVotes = 2;
     constructor(props){
         super(props);
+        this.state = {
+            guestCanPause: true,
+            votesToSkip: this.defaultVotes,
+        };
+        this.handleRoomButtonPressed = this.handleRoomButtonPressed.bind(this);
+        this.handleVotesChange = this.handleVotesChange.bind(this);
+        this.handleGuestCanPauseChange = this.handleVotesChange.bind(this);
     }
+
+    handleVotesChange(e){
+        this.setState({
+            votesToSkip:e.target.value,
+        });
+    }
+
+    handleGuestCanPauseChange(e){
+        this.setState({
+            guestCanPauseChange:e.target.value === 'true' ? true : false,
+        });
+    }
+
+    handleRoomButtonPressed() {
+      // Fetch CSRF token from Django
+        axios.get('/csrf_token')
+            .then(response => {
+            const csrfToken = response.data.csrfToken;
+          // Create the request payload
+            const data = {
+            votes_to_skip: this.state.votesToSkip,
+            guest_can_pause: this.state.guestCanPause
+        };
+          // Make the Axios request with the CSRF token in the headers
+        axios.post('/api/create-room', data, {
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken,
+            }
+        })
+        .then((response) => {
+            console.log(response.data);
+        })
+        .catch((error) => {
+            console.error('Error creating room:', error);
+        });
+        })
+        .catch(error => {
+        console.error('Error fetching CSRF token:', error);
+        });
+    }
+    
     render(){
         return (
         <Grid container spacing={1}>
@@ -31,7 +81,7 @@ export default class CreateRoomPage extends Component{
                             Guest Control of Playback State
                         </div>
                     </FormHelperText>
-                    <RadioGroup row deafultValue="true">
+                    <RadioGroup row deafultValue="true" onChange={this.handleGuestCanPauseChange}>
                         <FormControlLabel 
                             value="true" 
                             control={<Radio color="primary"/>}
@@ -46,6 +96,30 @@ export default class CreateRoomPage extends Component{
                         />
                     </RadioGroup>
                 </FormControl>
+            </Grid>
+            <Grid item xs={12} align="center">
+                <FormControl>
+                    <TextField required={true} type="number" onChange={this.handleVotesChange} deafultValue= {this.defaultVotes}
+                    inputProps={{
+                        min:1,
+                        style:{textAlign:"center"},
+                    }}/>
+                    <FormHelperText>
+                        <div align="center">
+                            Votes Required To Skip Song
+                        </div>
+                    </FormHelperText>
+                </FormControl>
+            </Grid>
+            <Grid item xs={12} align="center">
+                <Button color="primary" variant="contained" onClick={this.handleRoomButtonPressed}>
+                    Create A Room
+                </Button>
+            </Grid>
+            <Grid item xs={12} align="center">
+                <Button color="secondary" variant="contained" to="/" component={Link}>
+                    Back
+                </Button>
             </Grid>
         </Grid>
         );
