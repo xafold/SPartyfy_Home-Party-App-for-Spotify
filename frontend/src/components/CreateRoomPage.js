@@ -22,7 +22,7 @@ export default class CreateRoomPage extends Component{
         };
         this.handleRoomButtonPressed = this.handleRoomButtonPressed.bind(this);
         this.handleVotesChange = this.handleVotesChange.bind(this);
-        this.handleGuestCanPauseChange = this.handleVotesChange.bind(this);
+        this.handleGuestCanPauseChange = this.handleGuestCanPauseChange.bind(this);
     }
 
     handleVotesChange(e){
@@ -33,9 +33,35 @@ export default class CreateRoomPage extends Component{
 
     handleGuestCanPauseChange(e){
         this.setState({
-            guestCanPauseChange:e.target.value === 'true' ? true : false,
+            guestCanPause:e.target.value === 'true' ? true : false,
         });
     }
+
+    // handleRoomButtonPressed() {
+    //     axios.get('/csrf_token')
+    //     .then(response => {
+    //     const csrfToken = response.data.csrfToken
+    //     console.log(csrfToken)
+    //     const requestOptions = {
+    //         method: "POST",
+    //         headers: { 
+    //             'Content-Type': 'application/json',
+    //             'X-CSRFToken': csrfToken,
+    //         },
+    //         body: JSON.stringify({
+    //         votes_to_skip: this.state.votesToSkip,
+    //         guest_can_pause: this.state.guestCanPause,
+    //         }),
+    //     };
+    //     fetch('/api/create-room', requestOptions)
+    //         .then((response) => response.json())
+    //         .then((data) => this.props.history.push('/room/' + data.code));
+            
+    //     });
+    // }
+
+        
+    
 
     handleRoomButtonPressed() {
       // Fetch CSRF token from Django
@@ -55,15 +81,11 @@ export default class CreateRoomPage extends Component{
             }
         })
         .then((response) => {
-            console.log(response.data);
+            const roomCode= response.data["code"];
+            console.log(roomCode)
+            this.props.history.push('/room/' + roomCode);
         })
-        .catch((error) => {
-            console.error('Error creating room:', error);
-        });
         })
-        .catch(error => {
-        console.error('Error fetching CSRF token:', error);
-        });
     }
     
     render(){
