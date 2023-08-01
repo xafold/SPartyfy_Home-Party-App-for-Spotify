@@ -10,7 +10,7 @@ constructor(props) {
 
 render() {
     return (
-    <div>
+    <div className="center">
         <HomePage />
     </div>
     );

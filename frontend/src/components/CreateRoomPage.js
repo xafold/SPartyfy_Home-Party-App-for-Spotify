@@ -68,10 +68,11 @@ export default class CreateRoomPage extends Component{
         axios.get('/csrf_token')
             .then(response => {
             const csrfToken = response.data.csrfToken;
+            console.log(csrfToken);
           // Create the request payload
             const data = {
             votes_to_skip: this.state.votesToSkip,
-            guest_can_pause: this.state.guestCanPause
+            guest_can_pause: this.state.guestCanPause,
         };
           // Make the Axios request with the CSRF token in the headers
         axios.post('/api/create-room', data, {
@@ -82,7 +83,8 @@ export default class CreateRoomPage extends Component{
         })
         .then((response) => {
             const roomCode= response.data["code"];
-            console.log(roomCode)
+            console.log(response.data);
+            // console.log(roomCode);
             this.props.history.push('/room/' + roomCode);
         })
         })
