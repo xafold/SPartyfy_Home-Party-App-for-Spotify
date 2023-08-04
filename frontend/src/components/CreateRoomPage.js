@@ -56,7 +56,6 @@ handleRoomButtonPressed() {
     axios.get('/csrf_token')
         .then(response => {
         const csrfToken = response.data.csrfToken;
-        console.log(csrfToken);
     // Create the request payload
         const data = {
         votes_to_skip: this.state.votesToSkip,
@@ -71,8 +70,6 @@ handleRoomButtonPressed() {
     })
     .then((response) => {
         const roomCode= response.data["code"];
-        console.log(response.data);
-        // console.log(roomCode);
         this.props.history.push('/room/' + roomCode);
     });
     });

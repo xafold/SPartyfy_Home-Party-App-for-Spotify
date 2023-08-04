@@ -10,6 +10,7 @@ constructor(props) {
     guestCanPause: false,
     isHost: false,
     showSettings:false,
+    spotifyAuthenticated:false,
     };
     this.roomCode = this.props.match.params.roomCode;
     this.leaveButtonPressed = this.leaveButtonPressed.bind(this);
@@ -17,6 +18,7 @@ constructor(props) {
     this.renderSettings = this.renderSettings.bind(this);
     this.renderSettingsButton = this.renderSettingsButton.bind(this);
     this.getRoomDetails = this.getRoomDetails.bind(this);
+    this.authenticateSpotify = this.authenticateSpotify.bind(this);
     this.getRoomDetails();
 }   
 
@@ -24,7 +26,6 @@ constructor(props) {
 getRoomDetails() {
     return fetch("/api/get-room" + "?code=" + this.roomCode)
     .then((response) => {
-        console.log(response);
         if (!response.ok) {
         this.props.leaveRoomCallback;
         this.props.history.push("/");
@@ -37,15 +38,33 @@ getRoomDetails() {
         guestCanPause: data.guest_can_pause,
         isHost: data.is_host,
         });
+        if(this.state.isHost){
+        this.authenticateSpotify();
+        }
     });
 }
+authenticateSpotify() {
+fetch("/spotify/is-authenticated")
+    .then((response) => response.json())
+    .then((data) => {
+    this.setState({ spotifyAuthenticated: data.status });
+    console.log(data.status);
+    if (!data.status) {
+        fetch("/spotify/get-auth-url")
+        .then((response) => response.json())
+        .then((data) => {
+            window.location.replace(data.url);
+        });
+    }
+    });
+}
+
 
 leaveButtonPressed(){
     // Fetch CSRF token from Django
     axios.get('/csrf_token')
     .then(response => {
     const csrfToken = response.data.csrfToken;
-    console.log(csrfToken);
 // Create the request payload
     const data = {
 };
