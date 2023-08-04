@@ -47,3 +47,5 @@ Thumbs.db
 # Dependency directories
 npm-debug.log
 yarn-error.log
+
+spotify/api/credentials.py
