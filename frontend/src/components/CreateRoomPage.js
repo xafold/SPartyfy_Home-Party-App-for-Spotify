@@ -69,8 +69,9 @@ handleRoomButtonPressed() {
         }
     })
     .then((response) => {
-        const roomCode= response.data["code"];
-        this.props.history.push('/room/' + roomCode);
+        const room_Code= response.data["code"];
+        console.log(room_Code);
+        this.props.history.push('/room/' + room_Code);
     });
     });
 }

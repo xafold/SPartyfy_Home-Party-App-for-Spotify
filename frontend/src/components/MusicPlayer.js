@@ -3,12 +3,53 @@ import React, {Component} from "react";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import PauseIcon from "@material-ui/icons/Pause";
 import SkipNextIcon from "@material-ui/icons/SkipNext";
+import axios from 'axios';
 
 export default class MusicPlayer extends Component {
     constructor(props){
         super(props);
     }
 
+    skipSong(){
+        axios.get('/csrf_token')
+        .then(response => {
+        const csrfToken = response.data.csrfToken;
+        const data = {};
+        axios.post('/spotify/skip', data, {
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken,
+                }
+            });
+        });
+    }
+
+    pauseSong(){
+        axios.get('/csrf_token')
+        .then(response => {
+        const csrfToken = response.data.csrfToken;
+        const data = {};
+        axios.put('/spotify/pause', data, {
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken,
+                }
+            });
+        });
+    }
+    playSong(){
+        axios.get('/csrf_token')
+        .then(response => {
+        const csrfToken = response.data.csrfToken;
+        const data = {};
+        axios.put('/spotify/play', data, {
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken,
+                }
+            });
+        });
+    }
 
     render () {
         const songProgress = (this.props.time / this.props.duration) * 100 ;
@@ -26,10 +67,13 @@ export default class MusicPlayer extends Component {
                         {this.props.artist}
                     </Typography>
                     <div>
-                        <IconButton>
+                        <IconButton onClick={() => {
+                            this.props.is_playing ? 
+                            this.pauseSong() : 
+                            this.playSong();}}>
                             {this.props.is_playing ? <PauseIcon/> : <PlayArrowIcon/>}
                         </IconButton>
-                        <IconButton>
+                        <IconButton onClick={()=> this.skipSong()}>
                             <SkipNextIcon/>
                         </IconButton>
                     </div>

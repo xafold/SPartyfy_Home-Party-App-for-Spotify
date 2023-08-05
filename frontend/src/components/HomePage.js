@@ -46,13 +46,10 @@ return (
     </Grid>
 );
 }
-clearRoomCode(callback) {
-    this.setState(
-        {
+clearRoomCode() {
+    this.setState({
             roomCode: null,
-        },
-        callback // Call the callback function after updating the state
-    );
+    });
 }
 
 render() {

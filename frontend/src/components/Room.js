@@ -99,10 +99,9 @@ axios.post('/api/leave-room', data, {
     }
 })
 .then((_response) => {
-    this.props.leaveRoomCallback(() => {
-        this.props.history.push("/");
-    });
-})
+    this.props.leaveRoomCallback();
+    this.props.history.push("/");
+});
 });
 }
 

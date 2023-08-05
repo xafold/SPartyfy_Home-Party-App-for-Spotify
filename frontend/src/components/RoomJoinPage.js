@@ -1,13 +1,14 @@
 import React, { Component } from "react";
 import { TextField, Button, Grid, Typography } from "@material-ui/core";
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 export default class RoomJoinPage extends Component{
     constructor(props){
         super(props);
         this.state={
-            roomCode:" ",
-            error:" ",
+            roomCode:"",
+            error:"",
         };
         this.handleTextFieldChange = this.handleTextFieldChange.bind(this);
         this.roomButtonPressed = this.roomButtonPressed.bind(this);
@@ -57,7 +58,7 @@ export default class RoomJoinPage extends Component{
         const csrfToken = response.data.csrfToken;
       // Create the request payload
         const data = {
-        code: this.state.roomCode
+        code: this.state.roomCode,
     };
       // Make the Axios request with the CSRF token in the headers
     axios.post('/api/join-room', data, {
@@ -67,14 +68,14 @@ export default class RoomJoinPage extends Component{
         }
     })
     .then((response) => {
-            if(response.ok){
-                this.props.history.push(`/room/${this.state.roomCode}`)
+            if(response.status >= 200 && response.status < 300){
+                this.props.history.push(`/room/${this.state.roomCode}`);
             }else{
-                this.setState({error:"Room not found."})
+                this.setState({error:"Room not found."});
             }
     }).catch((error)=>{
         console.log(error);
-    })
-    })
+    });
+    });
     }
 }
