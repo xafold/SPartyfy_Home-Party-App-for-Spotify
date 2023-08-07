@@ -10,7 +10,8 @@ export default class MusicPlayer extends Component {
         super(props);
     }
 
-    skipSong(){
+skipSong(){
+        if (!this.props.userHasVoted) { 
         axios.get('/csrf_token')
         .then(response => {
         const csrfToken = response.data.csrfToken;
@@ -21,7 +22,9 @@ export default class MusicPlayer extends Component {
             'X-CSRFToken': csrfToken,
                 }
             });
+            this.props.updateUserVoted(true);
         });
+    }
     }
 
     pauseSong(){
@@ -70,7 +73,8 @@ export default class MusicPlayer extends Component {
                         <IconButton onClick={() => {
                             this.props.is_playing ? 
                             this.pauseSong() : 
-                            this.playSong();}}>
+                            this.playSong();
+                            }}>
                             {this.props.is_playing ? <PauseIcon/> : <PlayArrowIcon/>}
                         </IconButton>
                         <IconButton onClick={()=> this.skipSong()}>

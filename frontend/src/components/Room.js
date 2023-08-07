@@ -13,6 +13,8 @@ constructor(props) {
     showSettings:false,
     spotifyAuthenticated:false,
     song: {},
+    userHasVoted: false,
+    newSongTrigger: false,
     };
     this.roomCode = this.props.match.params.roomCode;
     this.leaveButtonPressed = this.leaveButtonPressed.bind(this);
@@ -22,6 +24,7 @@ constructor(props) {
     this.getRoomDetails = this.getRoomDetails.bind(this);
     this.authenticateSpotify = this.authenticateSpotify.bind(this);
     this.getCurrentSong = this.getCurrentSong.bind(this);
+    this.updateUserHasVoted = this.updateUserHasVoted.bind(this);
     this.getRoomDetails();
 }   
 
@@ -80,6 +83,12 @@ getCurrentSong(){
         }
     }).then((data)=> {
     this.setState({ song: data});
+    if (data.id !== this.state.song.id) {
+        // Reset userHasVoted state for a new song
+        this.props.updateUserVoted(false);
+        this.setState({ newSongTrigger: !this.state.newSongTrigger });
+    }
+    
 });
 }
 
@@ -108,7 +117,12 @@ axios.post('/api/leave-room', data, {
 updateShowSettings(value){
     this.setState({
         showSettings:value,
-    })
+    });
+}
+updateUserHasVoted(value){
+    this.setState({
+        userHasVoted: value,
+    });
 }
 
 renderSettings(){
@@ -158,7 +172,11 @@ render() {
             Code: {this.roomCode}
         </Typography>
         </Grid>
-        <MusicPlayer {...this.state.song} />
+        <MusicPlayer 
+        {...this.state.song} 
+        userHasVoted={this.state.userHasVoted} 
+        updateUserVoted={this.updateUserHasVoted }
+        key={this.state.newSongTrigger}/>
         {this.state.isHost ? this.renderSettingsButton() : null}
         <Grid item xs={12} align="center">
         <Button
