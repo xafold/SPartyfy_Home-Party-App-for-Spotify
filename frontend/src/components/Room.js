@@ -70,18 +70,22 @@ fetch("/spotify/is-authenticated")
     });
 }
 
-getCurrentSong(){
+getCurrentSong() {
     fetch("/spotify/current-song")
-    .then((response)=>{
-        if(!response.ok){
-            return{};
-        }else{
-            return response.json();
+      .then((response) => {
+        if (!response.ok) {
+          return {};
+        } else {
+          return response.json();
         }
-    }).then((data)=> {
-    this.setState({ song: data});
-});
-}
+      })
+      .then((data) => {
+        this.setState({ song: data });
+        console.log(data);
+      });
+  }
+
+
 
 leaveButtonPressed(){
     // Fetch CSRF token from Django
