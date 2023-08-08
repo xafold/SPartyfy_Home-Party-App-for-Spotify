@@ -2,10 +2,6 @@
 
 Welcome to SPartyfy! This application allows users to create and join music rooms, where they can collaborate on creating playlists and vote on skipping songs.
 
-## UI Screenshot 
-### Homepage:
-![Alt text](images/HomePage.png)
-
 ## Features
 
 - Create a room and become the host to control the music playback.
@@ -20,6 +16,7 @@ Welcome to SPartyfy! This application allows users to create and join music room
 - Spotify API (Authentication and Song Playback)
 - Material-UI (UI Components)
 - Axios (HTTP Requests)
+- Django REST Framework (API interaction)
 - PostreSQL (Databse)
 
 
@@ -69,6 +66,25 @@ To run the application locally, follow these steps:
         python manage.py runserver
         ```
     8. Access the Application: Open a web browser and go to `http://localhost:8000` to access your My Awesome Music Room App.
+
+## UI Screenshot 
+### Homepage:
+![Alt text](images/HomePage.png)
+
+### CreateRoom:
+![Alt text](images/CreateRoom.png)
+
+### JoinRoom:
+![Alt text](images/JoinPage.png)
+
+### HostRoom:
+![Alt text](images/MusicPlayer.png)
+
+### Setting:
+![Alt text](images/UpdateRoom.png)
+
+### UserPage:
+![Alt text](images/UserPage.png)
 
 ## Contributing
 
