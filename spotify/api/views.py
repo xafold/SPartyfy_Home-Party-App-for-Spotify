@@ -7,6 +7,7 @@ from rest_framework import status
 from spotify.utils import *
 from test_app.models import Room
 from spotify.models import *
+from django.contrib.sessions.models import Session
 
 class AuthURL(APIView):
     def get(self, request, format=None):
@@ -135,14 +136,29 @@ class SkipSong(APIView):
         room_code = self.request.session.get('room_code')
         room = Room.objects.filter(code=room_code)[0]
         votes = Vote.objects.filter(room=room, song_id=room.current_song)
+        vote_queues = room.vote_queue
         votes_needed = room.votes_to_skip
 
-        if self.request.session.session_key == room.host or len(votes) + 1 >= votes_needed:
+        if self.request.session.session_key == room.host:
             votes.delete()
             skip_song(room.host)
+            room.empty_vote_queue()
+            room.save()
         else:
-            vote = Vote(user=self.request.session.session_key,
+            if self.request.session.session_key not in vote_queues:
+                vote = Vote(user=self.request.session.session_key,
                         room=room, song_id=room.current_song)
-            vote.save()
+                vote.save()
+                vote_queues.append(self.request.session.session_key)
+                room.save()
+                if len(vote_queues)+1 > votes_needed:
+                    # Reset the vote queue
+                    votes.delete()
+                    room.empty_vote_queue()
+                    skip_song(room.host)
+                    room.save()
+                
+            else:
+                return Response({}, status=status.HTTP_403_FORBIDDEN)
 
-        return Response({}, status.HTTP_204_NO_CONTENT)
+        return Response({}, status=status.HTTP_403_FORBIDDEN)
