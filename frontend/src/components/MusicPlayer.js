@@ -8,8 +8,8 @@ import axios from 'axios';
 export default class MusicPlayer extends Component {
     constructor(props) {
         super(props);
-        this.state ={
-            userHasVoted:false,
+        this.state = {
+            userHasVoted: false,
         };
     }
 
