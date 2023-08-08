@@ -75,7 +75,7 @@ To run the application locally, follow these steps:
 ![Alt text](images/CreateRoom.png)
 
 ### JoinRoom:
-![Alt text](images/JoinPage.png)
+![Alt text](images/JoinRoom.png)
 
 ### HostRoom:
 ![Alt text](images/MusicPlayer.png)
