@@ -1,12 +1,13 @@
 # SPartyfy - Party Music Room App
 
-Welcome to SPartyfy! This application allows users to create and join music rooms, where they can collaborate on creating playlists and vote on skipping songs.
+Welcome to SPartyfy! This application allows users to create and join music rooms, where they can have control on music on host's device of the party and skip song based on votes.
 
 ## Features
 
 - Create a room and become the host to control the music playback.
 - Join existing rooms to enjoy music with others.
-- Collaboratively add songs to the playlist and vote on skipping songs(coming soon!!)
+- Collaboratively add songs to the playlist and (coming soon!!)
+- Vote on skipping songs
 - Seamless integration with Spotify for song playback.
 
 ## Technologies Used
