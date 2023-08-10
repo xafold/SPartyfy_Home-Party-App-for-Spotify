@@ -13,6 +13,7 @@ export default class Room extends Component {
             showSettings: false,
             spotifyAuthenticated: false,
             song: {},
+            queue: {},
         };
         this.roomCode = this.props.match.params.roomCode;
         this.leaveButtonPressed = this.leaveButtonPressed.bind(this);
@@ -22,6 +23,7 @@ export default class Room extends Component {
         this.getRoomDetails = this.getRoomDetails.bind(this);
         this.authenticateSpotify = this.authenticateSpotify.bind(this);
         this.getCurrentSong = this.getCurrentSong.bind(this);
+        this.getQueueSong = this.getQueueSong.bind(this);
         this.getRoomDetails();
     }
 
@@ -81,12 +83,25 @@ export default class Room extends Component {
                 }
             })
             .then((data) => {
-                this.setState({ song: data });
-                console.log(data);
+                this.setState({ song : data});
             });
     }
 
-
+    getQueueSong() {
+        fetch("/spotify/get-queue")
+            .then((response) => {
+                if (!response.ok) {
+                    return {};
+                } else {
+                    return response.json();
+                }
+            })
+            .then((data) => {
+                this.setState({ queue: data });
+                console.log(data);
+                console.log(this.state.queue);
+            });
+    }
 
     leaveButtonPressed() {
         // Fetch CSRF token from Django

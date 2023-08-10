@@ -9,22 +9,7 @@ export default class MusicPlayer extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            userHasVoted: false,
         };
-    }
-
-    componentDidMount() {
-        axios.get('/api/get-room' + '?code=' + this.props.roomCode)
-            .then(response => {
-                if (response.ok) {
-                    const voteQueue = response.data.vote_queue;
-                    const userHasVoted = voteQueue.includes(this.props.sessionKey);
-                    this.setState({ userHasVoted });
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching vote_queue:', error);
-            });
     }
 
     skipSong() {
@@ -93,7 +78,6 @@ export default class MusicPlayer extends Component {
                             </IconButton>
                             <IconButton
                                 onClick={() => this.skipSong()}
-                                disabled={this.state.userHasVoted}
                             >
                                 {this.props.votes} /{" "}
                                 {this.props.votes_required}

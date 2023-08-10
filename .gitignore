@@ -1,6 +1,6 @@
 .node
 node_modules/
-test_app/__pycache__
+**/__pycache__/
 
 # Dependency directories
 node_modules/
@@ -49,3 +49,6 @@ npm-debug.log
 yarn-error.log
 
 spotify/api/credentials.py
+
+.activate_conda_env.sh
+

@@ -21,8 +21,3 @@ class Room(models.Model):
     votes_to_skip = models.IntegerField(null=False, default=1)
     created_at = models.DateTimeField(auto_now_add=True)
     current_song = models.CharField(max_length=50, null=True)
-    vote_queue = models.JSONField(default=list)
-    
-    def empty_vote_queue(self):
-        self.vote_queue = []
-        self.save()

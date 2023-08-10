@@ -136,29 +136,70 @@ class SkipSong(APIView):
         room_code = self.request.session.get('room_code')
         room = Room.objects.filter(code=room_code)[0]
         votes = Vote.objects.filter(room=room, song_id=room.current_song)
-        vote_queues = room.vote_queue
         votes_needed = room.votes_to_skip
-
-        if self.request.session.session_key == room.host:
+        
+        if self.request.session.session_key == room.host :
             votes.delete()
             skip_song(room.host)
-            room.empty_vote_queue()
-            room.save()
         else:
-            if self.request.session.session_key not in vote_queues:
+            if self.request.session.session_key not in votes.values_list('user', flat=True):
                 vote = Vote(user=self.request.session.session_key,
                         room=room, song_id=room.current_song)
                 vote.save()
-                vote_queues.append(self.request.session.session_key)
-                room.save()
-                if len(vote_queues)+1 > votes_needed:
-                    # Reset the vote queue
+                if len(votes)+1 > votes_needed:
                     votes.delete()
-                    room.empty_vote_queue()
                     skip_song(room.host)
-                    room.save()
-                
             else:
-                return Response({}, status=status.HTTP_403_FORBIDDEN)
+                return Response({"Message":"Already Voted!!!"}, status=status.HTTP_403_FORBIDDEN)
+                
+        return Response({"Message":"Song Skipped!"}, status=status.HTTP_200_OK)
+    
+class GetQueue(APIView):
+    def get(self, request, format=None):
+        room_code = self.request.session.get('room_code')
+        room = Room.objects.filter(code=room_code)
+        if room.exists():
+            room = room[0]
+        else:
+            return Response({}, status=status.HTTP_404_NOT_FOUND)
+        host = room.host
+        endpoint = "player/queue"
+        response = execute_spotify_api_request(host, endpoint)
+        
+        if 'error' in response or 'queue' not in response:
+            return Response({}, status=status.HTTP_204_NO_CONTENT)
+        
+        queue = response['queue']
+        queue_infos = []
+        for track in queue[:3]:
+            queue_info = {
+                "name": track["name"],
+                "artist": track["artists"][0]["name"],
+                "img_url":track["album"]["images"][0]["url"],
+                "album": track["album"]["name"],
+                "album_id": track["album"]["id"],
+                "track_id":track["id"],
+            }
+            queue_infos.append(queue_info)
+            
+        response_data = {
+            "queue": queue_infos
+                        }
+        
+        return Response(response_data, status=status.HTTP_200_OK)
+    
+class GetQueue1(APIView):
+    def get(self, request, format=None):
+        room_code = self.request.session.get('room_code')
+        room = Room.objects.filter(code=room_code)
+        if room.exists():
+            room = room[0]
+        else:
+            return Response({}, status=status.HTTP_404_NOT_FOUND)
+        host = room.host
+        endpoint = "player/queue"
+        response = execute_spotify_api_request(host, endpoint)
+        
+        return Response(response, status=status.HTTP_200_OK)
+    
 
-        return Response({}, status=status.HTTP_403_FORBIDDEN)

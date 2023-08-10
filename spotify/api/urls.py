@@ -9,4 +9,6 @@ urlpatterns = [
     path('play',PlaySong.as_view(), name='play'),
     path('pause',PauseSong.as_view(), name='pause'),
     path('skip',SkipSong.as_view(), name='skip'),
+    path('get-queue', GetQueue.as_view(), name = 'get-queue'),
+    path('get-queue1', GetQueue1.as_view(), name = 'get-queue1'),
 ]
