@@ -13,7 +13,9 @@ export default class Room extends Component {
             showSettings: false,
             spotifyAuthenticated: false,
             song: {},
-            queue: {},
+            queue: {
+                queue: [], // Initialize queue as an empty array
+            },
         };
         this.roomCode = this.props.match.params.roomCode;
         this.leaveButtonPressed = this.leaveButtonPressed.bind(this);
@@ -83,7 +85,23 @@ export default class Room extends Component {
                 }
             })
             .then((data) => {
-                this.setState({ song : data});
+                const { id, time, duration, votes, votes_required, is_playing } = data;
+                if (this.state.song.id == id) {
+                    this.setState((prevState) => ({
+                        song: {
+                            ...prevState.song,
+                            time,
+                            duration,
+                            votes,
+                            votes_required,
+                            is_playing,
+                        },
+                    }));
+                } else {
+                    this.setState({ song: data }, () => {
+                        this.getQueueSong(); // Call getQueueSong when a new song is played
+                    });
+                }
             });
     }
 
@@ -98,8 +116,6 @@ export default class Room extends Component {
             })
             .then((data) => {
                 this.setState({ queue: data });
-                console.log(data);
-                console.log(this.state.queue);
             });
     }
 
@@ -182,6 +198,17 @@ export default class Room extends Component {
                     {...this.state.song}
                     roomCode={this.roomCode}
                 />
+                <ul className="queue">
+                    {this.state.queue.queue.map((item, index) => (
+                        <Typography key={item.track_id} variant="body1">
+                            Name: {item.name}<br />
+                            Artist: {item.artist}<br />
+                            Album: {item.album}<br />
+                            <img src={item.img_url} alt={`${item.name} Album Cover`} width="100" height="100" />
+                            <br /><br />
+                        </Typography>
+                    ))}
+                </ul>
                 {this.state.isHost ? this.renderSettingsButton() : null}
                 <Grid item xs={12} align="center">
                     <Button
